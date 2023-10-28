@@ -10,8 +10,7 @@ def getFolders(cur_dir):
 	folders = [folder for folder in os.listdir(cur_dir) if os.path.isdir(os.path.join(cur_dir, folder))]
 	for f in folders:
 		button = urwid.Button(f)
-		f = '"%s"' % f if ' ' in f else f
-		urwid.connect_signal(button, 'click', item_chosen, user_args=[cur_dir + '/' + f])
+		urwid.connect_signal(button, 'click', item_chosen, user_args=[os.path.join(cur_dir, f)])
 		body.append(urwid.AttrMap(button, None, focus_map='reversed'))
 	return urwid.ListBox(urwid.SimpleFocusListWalker(body))
 
@@ -37,8 +36,12 @@ def genTips():
 	body = [urwid.Text(tips_text), urwid.Divider()]
 	return urwid.ListBox(urwid.SimpleFocusListWalker(body))
 
-def item_chosen(button, folder):
-	main.original_widget = getFolders(folder)
+def item_chosen(folder, button):
+	os.system(f'echo "I am in.">> /tmp/lcc.log')
+	left_top = getFolders(folder)
+	left_top_box = urwid.LineBox(left_top, title="Folders")
+	left_column.contents[0] = (left_top_box, left_column.options())
+	main.original_widget = main
 
 def exit_program(button):
 	raise urwid.ExitMainLoop()
